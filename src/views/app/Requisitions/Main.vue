@@ -38,6 +38,16 @@
                     <EyeIcon class="w-4 h-4 mr-1" /> View
                   </a>
                   <a
+                    class="flex items-center mr-3"
+                    href="javascript:;"
+                    v-if="isStoreExecutive && requisition.status == 'issued'"
+                    @click="
+                      router.push({ name: 'view-requisition-issue-details', params: { id: requisition.id } })
+                    "
+                  >
+                    <EyeIcon class="w-4 h-4 mr-1" /> View Issue Details
+                  </a>
+                  <a
                     class="flex items-center text-danger"
                     href="javascript:;"
                     v-if="isAdmin && requisition.status == 'pending'"
