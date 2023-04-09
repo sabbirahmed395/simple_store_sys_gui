@@ -7,8 +7,18 @@
       <div class="intro-y col-span-12 lg:col-span-3">
         <!-- BEGIN: Form Layout -->
         <div class="intro-y box p-5">
-          <template v-for="(detail, d ) in details" :key="d">
-            <FormDetail @change="saveDetail" :items="items" :edit="detail" />
+          <template v-for="(detail, d ) in details" :key="d" style="border-bottom: 1px solid #ccc; padding: 10px;">
+            <div class="mt-3">
+              <label for="item">Item <small>*</small></label>
+              <select id="item" class="w-full" style="border-radius: 5px" v-model="details[d].item_id">
+                <option>-- Select an Item --</option>
+                <option v-for="(item, i) in items" :key="i" :value="item.id">{{ item.name }}</option>
+              </select>
+            </div>
+            <div class="mt-3">
+              <label for="quantity">Quantity <small>*</small></label>
+              <input type="text" id="quantity" class="form-control w-full" placeholder="Quantity" v-model="details[d].quantity">
+            </div>
           </template>
           <div class="text-left mt-5">
             <button type="button" class="btn btn-outline-secondary w-24 mr-1" @click="moreItem">
@@ -34,21 +44,15 @@ import { http } from "@/httpCommons";
 import router from "@/router";
 import { useRoute } from "vue-router";
 import Toastify from "toastify-js";
-import FormDetail from "./FormDetail.vue";
 
-let supplier_id = ref("");
-let item_id = ref("");
-let price = ref("");
-let quantity = ref("");
+let requisition = ref({});
+
 let details = ref({});
-let errors = ref({});
 
-let stock = ref({});
-
-let suppliers = ref({});
 let items = ref({});
 
 let formTitle = ref("");
+let errors = ref([]);
 
 let mode = ref("");
 let id = ref(null);
@@ -72,21 +76,23 @@ onMounted(() => {
   id.value = parseInt(route.path.split("/")[2]);
 
   if (isNaN(id.value)) {
-    formTitle.value = "Create New Stock";
+    formTitle.value = "Create New Requisition";
     mode.value = "create";
   } else {
-    formTitle.value = "Edit Stock";
+    formTitle.value = "Edit Requisition";
     mode.value = "edit";
     try {
       let res = http
-        .get(`stocks/${id.value}`)
+        .get(`requisitions/${id.value}`)
         .then((response) => {
           if (response.status === 200) {
-            stock.value = response.data.data;
-            supplier_id.value = response.data.data.supplier_id;
-            item_id.value = response.data.data.item_id;
-            price.value = response.data.data.price;
-            quantity.value = response.data.data.quantity;
+            requisition.value = response.data.data;
+            details.value = response.data.data.details.map((detail) => {
+              return {
+                item_id: detail.item_id,
+                quantity: detail.quantity
+              }
+            });
           }
         })
         .catch((error) => {
@@ -115,9 +121,6 @@ onMounted(() => {
 
 });
 
-const saveDetail = (detail) => {
-  console.log(detail);
-}
 
 const moreItem = () => {
   details.value.push({
@@ -137,18 +140,15 @@ const getItems = async () => {
 
 const save = async () => {
   let formData = {};
-  formData.supplier_id = supplier_id.value;
-  formData.item_id = item_id.value;
-  formData.price = price.value;
-  formData.quantity = quantity.value;
+  formData.details = details.value;
 
   try {
     if (mode.value === "create") {
       let res = await http
-        .post("stocks", formData)
+        .post("requisitions", formData)
         .then((response) => {
           if (response.status === 201) {
-            router.push({ name: "stocks" });
+            router.push({ name: "my_requisitions" });
           }
         })
         .catch((error) => {
@@ -161,10 +161,10 @@ const save = async () => {
 
     if (mode.value === "edit") {
       let res = await http
-        .put(`stocks/${id.value}`, formData)
+        .put(`requisitions/${id.value}`, formData)
         .then((response) => {
           if (response.status === 200) {
-            router.push({ name: "stocks" });
+            router.push({ name: "my_requisitions" });
           }
         })
         .catch((error) => {
@@ -180,13 +180,10 @@ const save = async () => {
 };
 
 defineExpose({
-  supplier_id,
-  item_id,
-  price,
-  quantity,
+  requisition,
+  items,
   details,
   errors,
-  stock,
   formTitle,
   save,
 });
