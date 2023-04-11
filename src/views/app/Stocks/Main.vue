@@ -28,20 +28,23 @@
         <table class="table table-report -mt-2">
           <thead>
             <tr>
-              <!-- <th class="whitespace-nowrap">SERIAL</th> -->
+              <th class="whitespace-nowrap">STOCK ID</th>
               <th class="whitespace-nowrap">ITEM NAME</th>
               <th class="whitespace-nowrap">SUPPLIER NAME</th>
               <th class="whitespace-nowrap">PRICE</th>
               <th class="whitespace-nowrap">QUANTITY</th>
+              <th class="whitespace-nowrap">Available</th>
               <th class="text-center whitespace-nowrap" v-if="isStoreExecutive">ACTIONS</th>
             </tr>
           </thead>
           <tbody>
             <tr v-for="(stock, k) in stocks" :key="k" class="intro-x">
+              <td class="font-medium whitespace-nowrap">{{ stock.id }}</td>
               <td class="font-medium whitespace-nowrap">{{ stock.item_name }}</td>
               <td class="font-medium whitespace-nowrap">{{ stock.supplier_name }}</td>
               <td class="font-medium whitespace-nowrap">{{ stock.price }}</td>
               <td class="font-medium whitespace-nowrap">{{ stock.quantity }}</td>
+              <td class="font-medium whitespace-nowrap">{{ stock.quantity - stock.issued }}</td>
               <td class="table-report__action w-56" v-if="isStoreExecutive">
                 <div class="flex justify-center items-center">
                   <a

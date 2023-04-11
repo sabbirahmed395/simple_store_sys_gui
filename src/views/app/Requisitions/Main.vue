@@ -63,7 +63,18 @@
                     @click="actionIssue(requisition.id)"
                   >
                     <!-- <Trash2Icon class="w-4 h-4 mr-1" /> -->
-                     Issue
+                     Issue (System FIFO)
+                  </a>
+                  <a
+                    class="flex items-center text-danger"
+                    href="javascript:;"
+                    v-if="isStoreExecutive && requisition.status == 'approved'"
+                    @click="
+                      router.push({ name: 'view-requisition-issue-manual', params: { id: requisition.id } })
+                    "
+                  >
+                    <!-- <Trash2Icon class="w-4 h-4 mr-1" /> -->
+                     Issue (Manual)
                   </a>
                 </div>
               </td>

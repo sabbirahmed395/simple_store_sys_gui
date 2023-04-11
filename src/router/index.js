@@ -20,6 +20,7 @@ import Requisitions from "../views/app/Requisitions/Main.vue";
 import MyRequisitions from "../views/app/Requisitions/MyRequisition.vue";
 import RequisitionForm from "../views/app/Requisitions/Form.vue";
 import RequisitionView from "../views/app/Requisitions/View.vue";
+import RequisitionIssueManual from "../views/app/Requisitions/IssueManual.vue";
 import RequisitionIssueDetails from "../views/app/Requisitions/IssueDetails.vue";
 
 import Users from "../views/app/users/Main.vue";
@@ -109,6 +110,11 @@ const routes = [
 				path: '/requisitions/:id/issued-details',
 				name: 'view-requisition-issue-details',
 				component: RequisitionIssueDetails
+			},
+			{
+				path: '/requisitions/:id/issued-manual',
+				name: 'view-requisition-issue-manual',
+				component: RequisitionIssueManual
 			},
 			
 			// users
